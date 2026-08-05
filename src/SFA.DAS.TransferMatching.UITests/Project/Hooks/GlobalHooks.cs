@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Microsoft.Playwright;
+using SFA.DAS.TransferMatching.UITests.Project.Helper;
 
 namespace SFA.DAS.TransferMatching.UITests.Project.Hooks;
 
@@ -21,3 +22,5 @@ public class GlobalHooks
         if (Fixture != null) await Fixture.GlobalTeardown();
     }
 }
+
+// Per-scenario setup via SpecFlow hooks will create ObjectContext instances when needed in step constructors.

@@ -1,6 +1,7 @@
 using TechTalk.SpecFlow;
 using SFA.DAS.TransferMatching.UITests.Project.Helper;
 using SFA.DAS.TransferMatching.UITests.Project.PageObjects;
+using SFA.DAS.TransferMatching.UITests.Project.Hooks;
 
 namespace SFA.DAS.TransferMatching.UITests.Project.Steps;
 
@@ -13,6 +14,13 @@ public class PledgeSteps
     [When("the levy employer can create pledge using default criteria")]
     public async Task WhenCreatePledgeDefault()
     {
+        if (_context.Page == null)
+        {
+            var fixture = GlobalHooks.Fixture ?? throw new InvalidOperationException("Fixture not initialized");
+            var bc = await fixture.CreateContextAsync();
+            await _context.InitAsync(bc);
+        }
+
         var create = _context.GetPage<CreatePledgePage>();
         if (create is CreatePledgePage cp)
         {
@@ -30,5 +38,6 @@ public class PledgeSteps
             var has = await pl.HasPledgeWithAmountAsync("1000");
             NUnit.Framework.Assert.IsTrue(has);
         }
+        await _context.DisposeAsync();
     }
 }

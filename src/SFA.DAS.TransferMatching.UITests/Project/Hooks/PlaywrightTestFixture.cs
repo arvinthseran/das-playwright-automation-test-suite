@@ -21,4 +21,10 @@ public class PlaywrightTestFixture
         if (Browser != null) await Browser.CloseAsync();
         Playwright?.Dispose();
     }
+
+    public async Task<IBrowserContext> CreateContextAsync()
+    {
+        if (Browser == null) throw new InvalidOperationException("Browser not initialized");
+        return await Browser.NewContextAsync();
+    }
 }

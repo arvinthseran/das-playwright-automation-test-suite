@@ -1,17 +1,32 @@
 using Microsoft.Playwright;
-using SFA.DAS.TransferMatching.UITests.Project.PageObjects;
+using System;
 
 namespace SFA.DAS.TransferMatching.UITests.Project.Helper;
 
-public class ObjectContext
+public class ObjectContext : IAsyncDisposable
 {
-    public IBrowserContext? BrowserContext { get; set; }
-    public IPage? Page { get; set; }
+    public IBrowserContext? BrowserContext { get; private set; }
+    public IPage? Page { get; private set; }
 
-    // page object factory using existing Page
+    public async Task InitAsync(IBrowserContext context)
+    {
+        BrowserContext = context;
+        Page = await BrowserContext.NewPageAsync();
+    }
+
     public TPage GetPage<TPage>() where TPage : class
     {
-        if (Page == null) return Activator.CreateInstance<TPage>();
+        if (Page == null)
+        {
+            // fallback to parameterless constructor
+            return Activator.CreateInstance<TPage>();
+        }
         return (TPage)Activator.CreateInstance(typeof(TPage), Page)!;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Page != null) await Page.CloseAsync();
+        if (BrowserContext != null) await BrowserContext.CloseAsync();
     }
 }

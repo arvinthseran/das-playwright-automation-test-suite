@@ -1,6 +1,7 @@
 using TechTalk.SpecFlow;
 using SFA.DAS.TransferMatching.UITests.Project.Helper;
 using SFA.DAS.TransferMatching.UITests.Project.PageObjects;
+using SFA.DAS.TransferMatching.UITests.Project.Hooks;
 
 namespace SFA.DAS.TransferMatching.UITests.Project.Steps;
 
@@ -19,14 +20,13 @@ public class TransferMatchingSteps
     [Given("the levy employer logins using existing transfer matching account")]
     public async Task GivenLevyEmployerLogins()
     {
-        // placeholder - assume login helper exists and sets _context.Page
         if (_context.Page == null)
         {
-            var bc = GlobalHooks.Fixture?.Browser?.NewContextAsync().Result;
-            _context.BrowserContext = bc;
-            _context.Page = bc?.NewPageAsync().Result;
+            var fixture = GlobalHooks.Fixture ?? throw new InvalidOperationException("Fixture not initialized");
+            var bc = await fixture.CreateContextAsync();
+            await _context.InitAsync(bc);
         }
-        // navigate to home
+
         var home = new HomePage(_context.Page!);
         await home.NavigateAsync();
     }
@@ -34,8 +34,8 @@ public class TransferMatchingSteps
     [Then("the levy employer can verify login for existing view user")]
     public async Task ThenVerifyLoginForExistingViewUser()
     {
-        // simple assertion placeholder
         var title = await _context.Page!.TitleAsync();
         NUnit.Framework.Assert.IsNotNull(title);
+        await _context.DisposeAsync();
     }
 }
