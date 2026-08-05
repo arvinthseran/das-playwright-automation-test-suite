@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using SFA.DAS.TransferMatching.UITests.Project.PageObjects;
 
 namespace SFA.DAS.TransferMatching.UITests.Project.Helper;
 
@@ -7,9 +8,10 @@ public class ObjectContext
     public IBrowserContext? BrowserContext { get; set; }
     public IPage? Page { get; set; }
 
-    // simple page factory placeholder
-    public TPage GetPage<TPage>() where TPage : class, new()
+    // page object factory using existing Page
+    public TPage GetPage<TPage>() where TPage : class
     {
-        return new TPage();
+        if (Page == null) return Activator.CreateInstance<TPage>();
+        return (TPage)Activator.CreateInstance(typeof(TPage), Page)!;
     }
 }
