@@ -1,0 +1,5 @@
+{
+  "project": "SFA.DAS.TransferMatching.UITests",
+  "featureSource": "Project/Tests/Features",
+  "output": "Generated"
+}
